@@ -106,6 +106,31 @@ function renderCreateQuizPage3() {
   containerDiv.innerHTML += templateHTML;
 }
 
+// função para renderizar a página 4 da tela 3
+function renderCreateQuizPage4() {
+  const containerDiv = document.querySelector('.container');
+  const templateHTML = `
+  <div class="screen-3-4">
+    <h2 class="heading">Seu quizz está pronto!</h2>
+
+    <div class="quizz-success-wrapper">
+      <img src="./images/harry.png" alt="" class="quizz-success-image">
+      <span class="quizz-success-text">O quão Potterhead é você?</span>
+    </div>
+
+    <button type="button" class="btn">
+      Finalizar Quizz
+    </button>
+
+    <button type="button" class="btn go-home">
+      Voltar para home
+    </button>
+  </div>
+  `;
+
+  containerDiv.innerHTML += templateHTML;
+}
+
 // funções para renderizar seção todos os quizzes - tela inicial
 function insertQuizz(quizz, section) {
   console.log('teste', quizz, section, 'teste');
