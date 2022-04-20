@@ -27,6 +27,10 @@ body {
   cursor: pointer;
 }
 
+.hidden {
+  display: none;
+}
+
 .container {
   width: 100%;
 
@@ -44,7 +48,12 @@ body {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-/* estilizações tela 3 - criação de quiz */
+/* estilizações tela 3 - criação de quiz (1) */
+.screen-3-1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .heading {
   margin-top: 70px;
 
@@ -53,19 +62,26 @@ body {
   line-height: 27px;
 }
 
-.form-start {
+.form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-
-  margin-top: 26px;
-  margin-bottom: 85px;
+  align-items: flex-start;
 
   width: 600px;
-  padding: 20px 15px;
 
   background-color: white;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+}
+
+.form.active .form-content {
+  display: block;
+}
+
+.form-info {
+  margin-top: 26px;
+  margin-bottom: 85px;
+
+  padding: 20px 15px;
 }
 
 input {
@@ -82,8 +98,64 @@ input {
   font-style: italic;
 }
 
-input + input {
+.quizz-info + .quizz-info {
   margin-top: 8px;
 }
+
+/* página (2) perguntas do quiz tela 3 */
+.screen-3-2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.form-questions {
+  padding: 26px 15px;
+  margin-top: 36px;
+}
+
+.form-questions:last-of-type {
+  margin-bottom: 36px;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
+.form-content {
+  display: none;
+}
+
+.question-detail {
+  margin-top: 12px;
+}
+
+.question-correct-answer {
+  margin-top: 28px;
+}
+
+.question-correct-answer h3 {
+  margin-bottom: 24px;
+}
+
+.question-incorrect-answers {
+  margin-top: 28px;
+}
+
+.question-incorrect-answers h3 {
+  margin-bottom: 14px;
+}
+
+.input-incorrect-answer + .input-incorrect-answer {
+  margin-top: 32px;
+}
+
+.quizz-input + .quizz-input {
+  margin-top: 14px;
+}
+/* fim página perguntas do quiz tela 3 */
 
 /* fim da estilização da tela 3 */
