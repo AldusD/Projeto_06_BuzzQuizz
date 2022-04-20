@@ -15,4 +15,17 @@
   .form-info {
     margin-bottom: 28px;
   }
+
+  /* página 2 da tela 3 */
+  .screen-3-2 {
+    width: 100%;
+  }
+
+  .form .form-content {
+    width: 100%;
+  }
+
+  .form-questions:last-of-type {
+    margin-bottom: 46px;
+  }
 }
