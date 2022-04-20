@@ -4,6 +4,10 @@
     width: 100%;
   }
 
+  .form .form-content {
+    width: 100%;
+  }
+
   .heading {
     margin-top: 36px;
   }
@@ -21,11 +25,16 @@
     width: 100%;
   }
 
-  .form .form-content {
+  .form-questions:last-of-type {
+    margin-bottom: 46px;
+  }
+
+  /* página 3 da tela 3 */
+  .screen-3-3 {
     width: 100%;
   }
 
-  .form-questions:last-of-type {
-    margin-bottom: 46px;
+  .form-levels:last-of-type {
+    margin-bottom: 28px;
   }
 }
