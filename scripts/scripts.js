@@ -76,6 +76,36 @@ function renderCreateQuizPage2() {
   containerDiv.innerHTML += templateHTML;
 }
 
+// função para renderizar a página 3 da tela 3
+function renderCreateQuizPage3() {
+  const containerDiv = document.querySelector('.container');
+  const templateHTML = `
+  <div class="screen-3-3">
+    <h2 class="heading">Agora, decida os níveis</h2>
+
+    <div class="form form-levels active">
+      <div class="form-header">
+        <h3 class="form-heading">Nível 1</h3>
+        <img src="./images/edit.svg" alt="" class="edit-icon">
+      </div>
+
+      <div class="form-content">
+        <input type="text" placeholder="Título do nível" id="quizz-level-title" class="quizz-input">
+        <input type="text" placeholder="% de acerto mínima" id="quizz-level-porcentage" class="quizz-input">
+        <input type="text" placeholder="URL da imagem do nível" id="quizz-level-url" class="quizz-input">
+        <input type="text" placeholder="Descrição do nível" id="quizz-level-description" class="quizz-input">
+      </div>
+    </div>
+
+    <button type="button" class="btn">
+      Finalizar Quizz
+    </button>
+  </div>
+  `;
+
+  containerDiv.innerHTML += templateHTML;
+}
+
 // funções para renderizar seção todos os quizzes - tela inicial
 function insertQuizz(quizz, section) {
   console.log('teste', quizz, section, 'teste');

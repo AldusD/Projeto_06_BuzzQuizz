@@ -203,4 +203,24 @@ input {
 }
 /* fim página perguntas do quiz tela 3 */
 
+/* página nível (3) da tela 3 */
+.screen-3-3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-levels {
+  padding: 27px 17px;
+  margin-top: 43px;
+}
+
+.form-levels:last-of-type {
+  margin-bottom: 75px;
+}
+
+.form-levels .form-content {
+  margin-top: 12px;
+}
+
 /* fim da estilização da tela 3 */
