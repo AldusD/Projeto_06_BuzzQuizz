@@ -1,0 +1,18 @@
+@media screen and (max-width: 1100px) {
+  /* form de criação de perguntas */
+  .form {
+    width: 100%;
+  }
+
+  .heading {
+    margin-top: 36px;
+  }
+  /* página 1 da tela 3 */
+  .screen-3-1 {
+    width: 100%;
+  }
+
+  .form-info {
+    margin-bottom: 28px;
+  }
+}
