@@ -1,6 +1,14 @@
 // Variaveis globais e constantes
 const API = 'https://mock-api.driven.com.br/api/v6/buzzquizz';
 
+let inputTitleValue = '';
+let inputURLValue = '';
+let inputAmountValue = 0;
+let inputLevelValue = 0;
+
+let quizzInfos = {};
+let quizzData = {};
+
 // função para renderizar a página 1 da tela 3
 function renderCreateQuizPage() {
   const containerDiv = document.querySelector('.container');
@@ -11,17 +19,58 @@ function renderCreateQuizPage() {
     <div class="form form-info">
       <input type="text" placeholder="Título do seu quizz" class="quizz-info" id="quizz-title">
       <input type="text" placeholder="URL da imagem do seu quizz" class="quizz-info" id="quizz-url">
-      <input type="text" placeholder="Quantidade de perguntas do quizz" class="quizz-info" id="quizz-amount">
-      <input type="text" placeholder="Quantidade de níveis do quizz" class="quizz-info" id="quizz-level">
+      <input type="number" placeholder="Quantidade de perguntas do quizz" class="quizz-info" id="quizz-amount">
+      <input type="number" placeholder="Quantidade de níveis do quizz" class="quizz-info" id="quizz-level">
     </div>
 
-    <button type="button" class="btn">
+    <button type="button" class="btn" onclick="validateInputs()">
       Prosseguir pra criar perguntas
     </button>
   </div>
   `;
 
   containerDiv.innerHTML += templateHTML;
+}
+
+function validateInputs() {
+  const inputTitle = document.getElementById('quizz-title');
+  const inputURL = document.getElementById('quizz-url');
+  const inputAmount = document.getElementById('quizz-amount');
+  const inputLevel = document.getElementById('quizz-level');
+  inputTitleValue = inputTitle.value;
+  inputAmountValue = inputAmount.value;
+  inputLevelValue = inputLevel.value;
+
+  try {
+    inputURLValue = new URL(inputURL.value);
+  } catch (error) {
+    showMessageError('Preencha os dados corretamente');
+    return;
+  }
+
+  if (
+    inputTitleValue.length < 20 ||
+    inputTitleValue.length > 65 ||
+    inputAmountValue < 3 ||
+    inputLevelValue < 2
+  ) {
+    showMessageError('Preencha os dados corretamente');
+    return;
+  } else {
+    console.log('td validado');
+
+    quizzInfos = {
+      title: inputTitleValue,
+      image: inputURLValue.href,
+    };
+
+    console.log(quizzInfos);
+    renderCreateQuizPage2();
+  }
+}
+
+function showMessageError(message) {
+  alert(message);
 }
 
 // função para renderizar a página 2 da tela 3
@@ -133,13 +182,13 @@ function renderCreateQuizPage4() {
 
 // funções para renderizar seção todos os quizzes - tela inicial
 function insertQuizz(quizz, section) {
-  console.log('teste', quizz, section, 'teste');
+  // console.log('teste', quizz, section, 'teste');
   section.innerHTML += `<img scr="${quizz.image}">`;
 }
 
 function renderAllQuizzes() {
   const quizzes = document.querySelector('.all-quizzes .quizzes');
-  console.log(quizzes);
+  // console.log(quizzes);
   const promise = axios.get(`${API}/quizzes`);
 
   promise.then((response) =>
