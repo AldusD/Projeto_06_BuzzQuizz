@@ -93,7 +93,7 @@ function renderCreateQuizPage3() {
         <input type="text" placeholder="Título do nível" id="quizz-level-title" class="quizz-input">
         <input type="text" placeholder="% de acerto mínima" id="quizz-level-porcentage" class="quizz-input">
         <input type="text" placeholder="URL da imagem do nível" id="quizz-level-url" class="quizz-input">
-        <input type="text" placeholder="Descrição do nível" id="quizz-level-description" class="quizz-input">
+        <textarea placeholder="Descrição do nível" id="quizz-level-description" class="quizz-input"></textarea>
       </div>
     </div>
 
@@ -119,7 +119,7 @@ function renderCreateQuizPage4() {
     </div>
 
     <button type="button" class="btn">
-      Finalizar Quizz
+      Acessar Quizz
     </button>
 
     <button type="button" class="btn go-home">

@@ -134,7 +134,8 @@ img {
   padding: 20px 15px;
 }
 
-input {
+input,
+textarea {
   font-family: 'Roboto', sans-serif;
 
   width: 100%;

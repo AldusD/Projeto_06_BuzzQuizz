@@ -8,6 +8,10 @@
     width: 100%;
   }
 
+  textarea {
+    height: 120px;
+  }
+
   .heading {
     margin-top: 36px;
   }
