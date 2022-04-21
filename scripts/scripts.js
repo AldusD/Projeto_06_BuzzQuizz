@@ -84,7 +84,7 @@ function renderCreateQuizPage2() {
 
     <div class="forms">
       <div class="form form-questions active">
-        <div class="form-header">
+        <div class="form-header" onclick="openCloseForm(this)">
           <h3 class="form-heading">Pergunta 1</h3>
           <img src="./images/edit.svg" alt="" class="edit-icon">
         </div>
@@ -130,6 +130,10 @@ function renderCreateQuizPage2() {
   renderFormQuestions(quizzInfos.questionsAmount);
 }
 
+function openCloseForm(form) {
+  form.parentNode.classList.toggle('active');
+}
+
 function validateQuestionsInputs() {
   // terminar ainda validação toda
   const questionsListElement = Array.from(
@@ -147,7 +151,7 @@ function renderFormQuestions(questionsAmount) {
   for (let i = 1; i < questionsAmount; i++) {
     const templateForm = `
     <div class="form form-questions">
-      <div class="form-header">
+      <div class="form-header" onclick="openCloseForm(this)">
         <h3 class="form-heading">Pergunta ${i + 1}</h3>
         <img src="./images/edit.svg" alt="" class="edit-icon">
       </div>
