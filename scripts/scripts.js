@@ -38,8 +38,8 @@ function validateInputs() {
   const inputAmount = document.getElementById('quizz-amount');
   const inputLevel = document.getElementById('quizz-level');
   inputTitleValue = inputTitle.value;
-  inputAmountValue = inputAmount.value;
-  inputLevelValue = inputLevel.value;
+  inputAmountValue = Number(inputAmount.value);
+  inputLevelValue = Number(inputLevel.value);
 
   try {
     inputURLValue = new URL(inputURL.value);
@@ -62,6 +62,8 @@ function validateInputs() {
     quizzInfos = {
       title: inputTitleValue,
       image: inputURLValue.href,
+      questionsAmount: inputAmountValue,
+      levelsAmount: inputLevelValue,
     };
 
     console.log(quizzInfos);
@@ -80,24 +82,88 @@ function renderCreateQuizPage2() {
   <div class="screen-3-2">
     <h2 class="heading">Crie suas perguntas</h2>
 
-    <div class="form form-questions active">
+    <div class="forms">
+      <div class="form form-questions active">
+        <div class="form-header">
+          <h3 class="form-heading">Pergunta 1</h3>
+          <img src="./images/edit.svg" alt="" class="edit-icon">
+        </div>
+
+        <div class="form-content">
+          <div class="question-detail">
+            <input type="text" placeholder="Texto da pergunta" id="quizz-text" class="quizz-input">
+            <input type="text" placeholder="Cor de fundo da pergunta" id="quizz-color" class="quizz-input">
+          </div>
+
+          <div class="question-correct-answer">
+            <h3 class="form-heading-correct-answer">Resposta correta</h3>
+            <input type="text" placeholder="Resposta correta" id="quizz-correct-text" class="quizz-input">
+            <input type="text" placeholder="URL da imagem" id="quizz-correct-image" class="quizz-input">
+          </div>
+
+          <div class="question-incorrect-answers">
+            <h3 class="form-heading-correct-answer">Respostas incorretas</h3>
+            <div class="input-incorrect-answer">
+              <input type="text" placeholder="Resposta incorreta 1" id="quizz-incorrect-text-one" class="quizz-input">
+              <input type="text" placeholder="URL da imagem 1" id="quizz-incorrect-image-one" class="quizz-input">
+            </div>
+            <div class="input-incorrect-answer">
+              <input type="text" placeholder="Resposta incorreta 2" id="quizz-incorrect-text-two" class="quizz-input">
+              <input type="text" placeholder="URL da imagem 2" id="quizz-incorrect-image-two" class="quizz-input">
+            </div>
+            <div class="input-incorrect-answer">
+              <input type="text" placeholder="Resposta incorreta 3" id="quizz-incorrect-text-three" class="quizz-input">
+              <input type="text" placeholder="URL da imagem 3" id="quizz-incorrect-image-three" class="quizz-input">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn" onclick="validateQuestionsInputs()">
+      Prosseguir pra criar níveis
+    </button>
+  </div>
+  `;
+
+  containerDiv.innerHTML += templateHTML;
+  renderFormQuestions(quizzInfos.questionsAmount);
+}
+
+function validateQuestionsInputs() {
+  // terminar ainda validação toda
+  const questionsListElement = Array.from(
+    document.querySelectorAll('#quizz-text')
+  );
+  const questionsArray = questionsListElement.map(
+    (questionElement) => questionElement.value
+  );
+
+  console.log(questionsArray);
+}
+
+function renderFormQuestions(questionsAmount) {
+  const formsElement = document.querySelector('.forms');
+  for (let i = 1; i < questionsAmount; i++) {
+    const templateForm = `
+    <div class="form form-questions">
       <div class="form-header">
-        <h3 class="form-heading">Pergunta 1</h3>
+        <h3 class="form-heading">Pergunta ${i + 1}</h3>
         <img src="./images/edit.svg" alt="" class="edit-icon">
       </div>
-
+  
       <div class="form-content">
         <div class="question-detail">
           <input type="text" placeholder="Texto da pergunta" id="quizz-text" class="quizz-input">
           <input type="text" placeholder="Cor de fundo da pergunta" id="quizz-color" class="quizz-input">
         </div>
-
+  
         <div class="question-correct-answer">
           <h3 class="form-heading-correct-answer">Resposta correta</h3>
           <input type="text" placeholder="Resposta correta" id="quizz-correct-text" class="quizz-input">
           <input type="text" placeholder="URL da imagem" id="quizz-correct-image" class="quizz-input">
         </div>
-
+  
         <div class="question-incorrect-answers">
           <h3 class="form-heading-correct-answer">Respostas incorretas</h3>
           <div class="input-incorrect-answer">
@@ -115,14 +181,10 @@ function renderCreateQuizPage2() {
         </div>
       </div>
     </div>
+    `;
 
-    <button type="button" class="btn">
-      Prosseguir pra criar perguntas
-    </button>
-  </div>
-  `;
-
-  containerDiv.innerHTML += templateHTML;
+    formsElement.innerHTML += templateForm;
+  }
 }
 
 // função para renderizar a página 3 da tela 3
