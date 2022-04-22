@@ -6,6 +6,8 @@ let inputURLValue = '';
 let inputAmountValue = 0;
 let inputLevelValue = 0;
 
+let levelURLValue = '';
+
 let quizzInfos = {};
 let quizzData = {};
 const questions = [];
@@ -277,7 +279,7 @@ function renderCreateQuizPage3() {
       </div>
     </div>
 
-    <button type="button" class="btn" onclick="validateLevelsInputs()">
+    <button type="button" class="btn" onclick="getAllLevelsInput()">
       Finalizar Quizz
     </button>
   </div>
@@ -287,34 +289,62 @@ function renderCreateQuizPage3() {
   renderFormLevels(quizzInfos.levelsAmount);
 }
 
-function validateLevelsInputs() {
-  getAllLevelsInput();
-
-  // agora validar os dados
+function getAllLevelsInput() {
+  validateLevelsInputs();
 }
 
-function getAllLevelsInput() {
-  const allFormElement = Array.from(document.querySelectorAll('.form-levels'));
+function validateLevelsInputs() {
+  const levelPercentageElements = Array.from(
+    document.querySelectorAll('.input-level-percentage')
+  );
+  const levelPercentageArray = levelPercentageElements.map(
+    (element) => element.value
+  );
+  const hasPercentageZero = levelPercentageArray.includes('0');
+  if (!hasPercentageZero) {
+    showMessageError('Precisa ter um nível 0%');
+    return;
+  }
 
-  allFormElement.forEach((formElement) => {
-    const levelTitle = formElement.querySelector('.input-level-title').value;
-    const levelPercentage = formElement.querySelector(
-      '.input-level-percentage'
-    ).value;
-    const levelUrl = formElement.querySelector('.input-level-url').value;
-    const levelDescription = formElement.querySelector(
+  const allFormElement = Array.from(document.querySelectorAll('.form-levels'));
+  for (let i = 0; i < allFormElement.length; i++) {
+    const levelTitle =
+      allFormElement[i].querySelector('.input-level-title').value;
+    const levelPercentage = Number(
+      allFormElement[i].querySelector('.input-level-percentage').value
+    );
+    const levelUrl = allFormElement[i].querySelector('.input-level-url').value;
+    const levelDescription = allFormElement[i].querySelector(
       '.input-level-description'
     ).value;
 
+    try {
+      levelURLValue = new URL(levelUrl);
+    } catch (error) {
+      showMessageError('Preencha os dados corretamente');
+      break;
+    }
+
+    if (
+      levelTitle.length < 10 ||
+      levelPercentage < 0 ||
+      levelPercentage >= 100 ||
+      levelDescription < 30 ||
+      isNaN(levelPercentage)
+    ) {
+      showMessageError('Preencha os dados corretamente');
+      break;
+    }
+
     const levelsObject = {
       title: levelTitle,
-      image: levelUrl,
+      image: levelURLValue.href,
       text: levelDescription,
       minValue: levelPercentage,
     };
 
     levels.push(levelsObject);
-  });
+  }
 }
 
 function renderFormLevels(levelsAmount) {
