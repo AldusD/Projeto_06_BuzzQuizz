@@ -1,4 +1,13 @@
 @media screen and (max-width: 1100px) {
+  /* tela 1 */
+  
+  /* all quizzes */
+  .all-quizzes .quizzes {
+    justify-content: center;
+  }
+
+  /* tela 2 */
+  
   /* form de criação de perguntas */
   .form {
     width: 100%;

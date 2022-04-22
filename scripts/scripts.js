@@ -131,20 +131,68 @@ function renderCreateQuizPage4() {
   containerDiv.innerHTML += templateHTML;
 }
 
-// funções para renderizar seção todos os quizzes - tela inicial
-function insertQuizz(quizz, section) {
-  console.log('teste', quizz, section, 'teste');
-  section.innerHTML += `<img scr="${quizz.image}">`;
+// funções para renderizar seção todos os quizzes - tela 1
+function insertQuizzes(response, section) {
+  const quizzList = response.data;
+
+  for(let i = 0; i < Object.keys(quizzList).length; i++) {
+    section.innerHTML += `
+    <div class="quizz" onclick="renderQuizz(${quizzList[i].id})">
+      <img src=${quizzList[i].image} alt="quizz">
+      <h3>${quizzList[i].title}</h3>
+    </div>`;
+  }
 }
 
 function renderAllQuizzes() {
   const quizzes = document.querySelector('.all-quizzes .quizzes');
-  console.log(quizzes);
+  quizzes.innerHTML = '';
   const promise = axios.get(`${API}/quizzes`);
 
-  promise.then((response) =>
-    response.data.map(insertQuizz.bind(null, quizzes))
-  );
+  promise.then(response => insertQuizzes(response, quizzes));
+}
+
+// funções para carregar um quizz - tela 2
+function loadQuizz(quizz) {
+  let quizzHTML = '<div class="screen-2">';
+  let quizzTitle = `
+    <div class="quizz-title">
+      <img src="${quizz.image}" alt="quizz">
+      <h2>${quizz.title}</h2>
+    </div>`;
+  let quizzQuestions = '';
+  quizzQuestions += `<div class="questions">`;
+  for(let i = 0; i < quizz.questions.length; i++) {
+    quizzQuestions += `
+    <div class="question">
+      <h3 style="background-color: ${quizz.questions[i].color}">${quizz.questions[i].title}</h3>
+      <div class="answers">`;
+    for(let j = 0; j < quizz.questions[i].answers.length; j++) {
+      quizzQuestions += `
+      <div onclick="selectAnswer(this)" class="answer ${quizz.questions[i].answers[j].isCorrectAnswer}">
+      <img src="${quizz.questions[i].answers[j].image}" alt="answer">
+      <p>${quizz.questions[i].answers[j].text}</p>
+    </div>`
+    }
+    quizzQuestions += `
+      </div>
+    </div>`;
+  }
+  quizzQuestions += `
+    </div>
+  </div>`;
+  quizzHTML += quizzTitle + quizzQuestions;
+  console.log(quizzHTML)
+  return quizzHTML;              
+
+}
+function renderQuizz(id) {
+  const container = document.querySelector(".container");
+  const promise = axios.get(`${API}/quizzes/${id}`);
+  promise.then(response => {
+    document.querySelector(".screen-1").classList.add("hidden");
+    container.innerHTML += loadQuizz(response.data);  
+  });
 }
 
 renderAllQuizzes();
