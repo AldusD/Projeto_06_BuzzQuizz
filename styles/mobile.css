@@ -17,6 +17,10 @@
     width: 100%;
   }
 
+  textarea {
+    height: 120px;
+  }
+
   .heading {
     margin-top: 36px;
   }
@@ -45,5 +49,18 @@
 
   .form-levels:last-of-type {
     margin-bottom: 28px;
+  }
+
+  /* página 4 da tela 3 */
+  .screen-3-4 {
+    width: 100%;
+
+    padding-inline: 20px;
+  }
+
+  .quizz-success-wrapper {
+    width: 100%;
+
+    margin-bottom: 24px;
   }
 }
