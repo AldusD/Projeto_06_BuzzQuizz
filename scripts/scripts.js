@@ -208,7 +208,34 @@ function getAllQuestionsInput() {
       allFormElement[i].querySelectorAll('.question-incorrect-answer')
     );
 
-    for (let i = 0; i < allIncorrectAnswersElement.length; i++) {
+    const firstIncorrectAnswerTitle =
+      allIncorrectAnswersElement[0].querySelector(
+        '.input-incorrect-answer'
+      ).value;
+    const firstIncorrectAnswerURL = allIncorrectAnswersElement[0].querySelector(
+      '.input-incorrect-url'
+    ).value;
+    try {
+      incorrectAnswerURLValue = new URL(firstIncorrectAnswerURL);
+    } catch (error) {
+      hasError = true;
+      showMessageError('Preencha os dados corretamente');
+      break;
+    }
+
+    if (firstIncorrectAnswerTitle.length <= 0) {
+      break;
+    }
+
+    const incorrectAnswerObject = {
+      text: firstIncorrectAnswerTitle,
+      image: incorrectAnswerURLValue.href,
+      isCorrectAnswer: false,
+    };
+
+    answers.push(incorrectAnswerObject);
+
+    for (let i = 1; i < allIncorrectAnswersElement.length; i++) {
       // falta permitir 1, 2 ou 3 respostas incorretas em vez de 4
       const incorrectAnswerTitle = allIncorrectAnswersElement[i].querySelector(
         '.input-incorrect-answer'
@@ -217,25 +244,35 @@ function getAllQuestionsInput() {
         '.input-incorrect-url'
       ).value;
 
-      try {
-        incorrectAnswerURLValue = new URL(incorrectAnswerURL);
-      } catch (error) {
-        hasError = true;
-        showMessageError('Preencha os dados corretamente');
-        break;
+      if (incorrectAnswerTitle.length > 0 || incorrectAnswerURL.length > 0) {
+        if (incorrectAnswerTitle.length <= 0) {
+          hasError = true;
+          showMessageError('Preencha os dados corretamente');
+          break;
+        }
+
+        if (incorrectAnswerURL.length > 0) {
+          try {
+            incorrectAnswerURLValue = new URL(incorrectAnswerURL);
+          } catch (error) {
+            hasError = true;
+            showMessageError('Preencha os dados corretamente');
+            break;
+          }
+        } else {
+          hasError = true;
+          showMessageError('Preencha os dados corretamente');
+          break;
+        }
+
+        const answerObject = {
+          text: incorrectAnswerTitle,
+          image: incorrectAnswerURLValue.href,
+          isCorrectAnswer: false,
+        };
+
+        answers.push(answerObject);
       }
-
-      if (incorrectAnswerTitle.length <= 0) {
-        break;
-      }
-
-      const answerObject = {
-        text: incorrectAnswerTitle,
-        image: incorrectAnswerURLValue.href,
-        isCorrectAnswer: false,
-      };
-
-      answers.push(answerObject);
     }
 
     if (hasError) break;
