@@ -202,7 +202,7 @@ textarea {
   margin-bottom: 14px;
 }
 
-.input-incorrect-answer + .input-incorrect-answer {
+.question-incorrect-answer + .question-incorrect-answer {
   margin-top: 32px;
 }
 

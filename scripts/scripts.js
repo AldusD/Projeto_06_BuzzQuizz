@@ -8,6 +8,7 @@ let inputLevelValue = 0;
 
 let quizzInfos = {};
 let quizzData = {};
+const questions = [];
 
 // função para renderizar a página 1 da tela 3
 function renderCreateQuizPage() {
@@ -91,29 +92,29 @@ function renderCreateQuizPage2() {
 
         <div class="form-content">
           <div class="question-detail">
-            <input type="text" placeholder="Texto da pergunta" id="quizz-text" class="quizz-input">
-            <input type="text" placeholder="Cor de fundo da pergunta" id="quizz-color" class="quizz-input">
+            <input type="text" placeholder="Texto da pergunta" id="quizz-text" class="quizz-input input-question-title">
+            <input type="text" placeholder="Cor de fundo da pergunta" id="quizz-color" class="quizz-input input-question-color">
           </div>
 
-          <div class="question-correct-answer">
+          <div class="question-correct-answer answer">
             <h3 class="form-heading-correct-answer">Resposta correta</h3>
-            <input type="text" placeholder="Resposta correta" id="quizz-correct-text" class="quizz-input">
-            <input type="text" placeholder="URL da imagem" id="quizz-correct-image" class="quizz-input">
+            <input type="text" placeholder="Resposta correta" id="quizz-correct-text" class="quizz-input input-correct-answer">
+            <input type="text" placeholder="URL da imagem" id="quizz-correct-image" class="quizz-input input-correct-url">
           </div>
 
           <div class="question-incorrect-answers">
             <h3 class="form-heading-correct-answer">Respostas incorretas</h3>
-            <div class="input-incorrect-answer">
-              <input type="text" placeholder="Resposta incorreta 1" id="quizz-incorrect-text-one" class="quizz-input">
-              <input type="text" placeholder="URL da imagem 1" id="quizz-incorrect-image-one" class="quizz-input">
+            <div class="question-incorrect-answer answer">
+              <input type="text" placeholder="Resposta incorreta 1" id="quizz-incorrect-text-one" class="quizz-input input-incorrect-answer">
+              <input type="text" placeholder="URL da imagem 1" id="quizz-incorrect-image-one" class="quizz-input input-incorrect-url">
             </div>
-            <div class="input-incorrect-answer">
-              <input type="text" placeholder="Resposta incorreta 2" id="quizz-incorrect-text-two" class="quizz-input">
-              <input type="text" placeholder="URL da imagem 2" id="quizz-incorrect-image-two" class="quizz-input">
+            <div class="question-incorrect-answer answer">
+              <input type="text" placeholder="Resposta incorreta 2" id="quizz-incorrect-text-two" class="quizz-input input-incorrect-answer">
+              <input type="text" placeholder="URL da imagem 2" id="quizz-incorrect-image-two" class="quizz-input input-incorrect-url">
             </div>
-            <div class="input-incorrect-answer">
-              <input type="text" placeholder="Resposta incorreta 3" id="quizz-incorrect-text-three" class="quizz-input">
-              <input type="text" placeholder="URL da imagem 3" id="quizz-incorrect-image-three" class="quizz-input">
+            <div class="question-incorrect-answer answer">
+              <input type="text" placeholder="Resposta incorreta 3" id="quizz-incorrect-text-three" class="quizz-input input-incorrect-answer">
+              <input type="text" placeholder="URL da imagem 3" id="quizz-incorrect-image-three" class="quizz-input input-incorrect-url">
             </div>
           </div>
         </div>
@@ -135,6 +136,8 @@ function openCloseForm(form) {
 }
 
 function validateQuestionsInputs() {
+  getAllQuestionsInput();
+
   // terminar ainda validação toda
   const questionsListElement = Array.from(
     document.querySelectorAll('#quizz-text')
@@ -143,7 +146,61 @@ function validateQuestionsInputs() {
     (questionElement) => questionElement.value
   );
 
-  console.log(questionsArray);
+  const hexadecimalRegExp = '/^#([0-9A-Fa-f]{3}){1,2}$/i';
+}
+
+function getAllQuestionsInput() {
+  const allFormElement = Array.from(
+    document.querySelectorAll('.form-questions')
+  );
+
+  allFormElement.forEach((formElement) => {
+    const questionTitle = formElement.querySelector('.input-question-title');
+    const questionColor = formElement.querySelector('.input-question-color');
+
+    const correctAnswerTitle = formElement.querySelector(
+      '.input-correct-answer'
+    );
+    const correctAnswerURL = formElement.querySelector('.input-correct-url');
+
+    const answers = [];
+
+    const answerObject = {
+      text: correctAnswerTitle.value,
+      image: correctAnswerURL.value,
+      isCorrectAnswer: true,
+    };
+
+    answers.push(answerObject);
+
+    const allIncorrectAnswersElement = Array.from(
+      formElement.querySelectorAll('.question-incorrect-answer')
+    );
+
+    allIncorrectAnswersElement.forEach((incorrectAnswer) => {
+      const incorrectAnswerTitle = incorrectAnswer.querySelector(
+        '.input-incorrect-answer'
+      );
+      const incorrectAnswerURL = incorrectAnswer.querySelector(
+        '.input-incorrect-url'
+      );
+
+      const answerObject = {
+        text: incorrectAnswerTitle.value,
+        image: incorrectAnswerURL.value,
+        isCorrectAnswer: false,
+      };
+
+      answers.push(answerObject);
+    });
+
+    const questionObject = {
+      title: questionTitle.value,
+      color: questionColor.value,
+      answers,
+    };
+    questions.push(questionObject);
+  });
 }
 
 function renderFormQuestions(questionsAmount) {
@@ -158,29 +215,29 @@ function renderFormQuestions(questionsAmount) {
   
       <div class="form-content">
         <div class="question-detail">
-          <input type="text" placeholder="Texto da pergunta" id="quizz-text" class="quizz-input">
-          <input type="text" placeholder="Cor de fundo da pergunta" id="quizz-color" class="quizz-input">
+          <input type="text" placeholder="Texto da pergunta" id="quizz-text" class="quizz-input input-question-title">
+          <input type="text" placeholder="Cor de fundo da pergunta" id="quizz-color" class="quizz-input input-question-color">
         </div>
   
-        <div class="question-correct-answer">
+        <div class="question-correct-answer answer">
           <h3 class="form-heading-correct-answer">Resposta correta</h3>
-          <input type="text" placeholder="Resposta correta" id="quizz-correct-text" class="quizz-input">
-          <input type="text" placeholder="URL da imagem" id="quizz-correct-image" class="quizz-input">
+          <input type="text" placeholder="Resposta correta" id="quizz-correct-text" class="quizz-input input-correct-answer">
+          <input type="text" placeholder="URL da imagem" id="quizz-correct-image" class="quizz-input input-correct-url">
         </div>
   
         <div class="question-incorrect-answers">
           <h3 class="form-heading-correct-answer">Respostas incorretas</h3>
-          <div class="input-incorrect-answer">
-            <input type="text" placeholder="Resposta incorreta 1" id="quizz-incorrect-text-one" class="quizz-input">
-            <input type="text" placeholder="URL da imagem 1" id="quizz-incorrect-image-one" class="quizz-input">
+          <div class="question-incorrect-answer answer">
+            <input type="text" placeholder="Resposta incorreta 1" id="quizz-incorrect-text-one" class="quizz-input input-incorrect-answer">
+            <input type="text" placeholder="URL da imagem 1" id="quizz-incorrect-image-one" class="quizz-input input-incorrect-url">
           </div>
-          <div class="input-incorrect-answer">
-            <input type="text" placeholder="Resposta incorreta 2" id="quizz-incorrect-text-two" class="quizz-input">
-            <input type="text" placeholder="URL da imagem 2" id="quizz-incorrect-image-two" class="quizz-input">
+          <div class="question-incorrect-answer answer">
+            <input type="text" placeholder="Resposta incorreta 2" id="quizz-incorrect-text-two" class="quizz-input input-incorrect-answer">
+            <input type="text" placeholder="URL da imagem 2" id="quizz-incorrect-image-two" class="quizz-input input-incorrect-url">
           </div>
-          <div class="input-incorrect-answer">
-            <input type="text" placeholder="Resposta incorreta 3" id="quizz-incorrect-text-three" class="quizz-input">
-            <input type="text" placeholder="URL da imagem 3" id="quizz-incorrect-image-three" class="quizz-input">
+          <div class="question-incorrect-answer answer">
+            <input type="text" placeholder="Resposta incorreta 3" id="quizz-incorrect-text-three" class="quizz-input input-incorrect-answer">
+            <input type="text" placeholder="URL da imagem 3" id="quizz-incorrect-image-three" class="quizz-input input-incorrect-url">
           </div>
         </div>
       </div>
