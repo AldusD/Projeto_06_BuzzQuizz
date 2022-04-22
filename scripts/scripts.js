@@ -13,6 +13,8 @@ let quizzData = {};
 const questions = [];
 const levels = [];
 
+let hasError = false;
+
 // função para renderizar a página 1 da tela 3
 function renderCreateQuizPage() {
   const containerDiv = document.querySelector('.container');
@@ -294,6 +296,9 @@ function getAllLevelsInput() {
 }
 
 function validateLevelsInputs() {
+  hasError = false;
+  const levelsData = [];
+
   const levelPercentageElements = Array.from(
     document.querySelectorAll('.input-level-percentage')
   );
@@ -302,6 +307,7 @@ function validateLevelsInputs() {
   );
   const hasPercentageZero = levelPercentageArray.includes('0');
   if (!hasPercentageZero) {
+    hasError = true;
     showMessageError('Precisa ter um nível 0%');
     return;
   }
@@ -321,6 +327,7 @@ function validateLevelsInputs() {
     try {
       levelURLValue = new URL(levelUrl);
     } catch (error) {
+      hasError = true;
       showMessageError('Preencha os dados corretamente');
       break;
     }
@@ -332,6 +339,7 @@ function validateLevelsInputs() {
       levelDescription < 30 ||
       isNaN(levelPercentage)
     ) {
+      hasError = true;
       showMessageError('Preencha os dados corretamente');
       break;
     }
@@ -343,7 +351,10 @@ function validateLevelsInputs() {
       minValue: levelPercentage,
     };
 
-    levels.push(levelsObject);
+    levelsData.push(levelsObject);
+  }
+  if (!hasError) {
+    levels.push(...levelsData);
   }
 }
 
@@ -399,7 +410,7 @@ function renderCreateQuizPage4() {
 function insertQuizzes(response, section) {
   const quizzList = response.data;
 
-  for(let i = 0; i < Object.keys(quizzList).length; i++) {
+  for (let i = 0; i < Object.keys(quizzList).length; i++) {
     section.innerHTML += `
     <div class="quizz" onclick="renderQuizz(${quizzList[i].id})">
       <img src=${quizzList[i].image} alt="quizz">
@@ -413,12 +424,12 @@ function renderAllQuizzes() {
   quizzes.innerHTML = '';
   const promise = axios.get(`${API}/quizzes`);
 
-  promise.then(response => insertQuizzes(response, quizzes));
+  promise.then((response) => insertQuizzes(response, quizzes));
 }
 
 // funções para carregar um quizz - tela 2
 function compare() {
-	return Math.random() - 0.5;
+  return Math.random() - 0.5;
 }
 
 function loadQuizz(quizz) {
@@ -432,21 +443,21 @@ function loadQuizz(quizz) {
 
   let quizzQuestions = '';
   quizzQuestions += `<div class="questions">`;
-  for(let i = 0; i < quizz.questions.length; i++) {
+  for (let i = 0; i < quizz.questions.length; i++) {
     quizzQuestions += `
     <div class="question">
       <h3 style="background-color: ${quizz.questions[i].color}">${quizz.questions[i].title}</h3>
       <div class="answers">`;
 
-      // randomizando as respostas
-      quizz.questions[i].answers.sort(compare);    
+    // randomizando as respostas
+    quizz.questions[i].answers.sort(compare);
 
-    for(let j = 0; j < quizz.questions[i].answers.length; j++) {
+    for (let j = 0; j < quizz.questions[i].answers.length; j++) {
       quizzQuestions += `
       <div onclick="selectAnswer(this)" class="answer ${quizz.questions[i].answers[j].isCorrectAnswer}">
         <img src="${quizz.questions[i].answers[j].image}" alt="answer">
         <p>${quizz.questions[i].answers[j].text}</p>
-      </div>`
+      </div>`;
     }
     quizzQuestions += `
       </div>
@@ -457,15 +468,14 @@ function loadQuizz(quizz) {
   </div>`;
 
   quizzHTML += quizzTitle + quizzQuestions;
-  return quizzHTML;              
-
+  return quizzHTML;
 }
 function renderQuizz(id) {
-  const container = document.querySelector(".container");
+  const container = document.querySelector('.container');
   const promise = axios.get(`${API}/quizzes/${id}`);
-  promise.then(response => {
-    document.querySelector(".screen-1").classList.add("hidden");
-    container.innerHTML += loadQuizz(response.data);  
+  promise.then((response) => {
+    document.querySelector('.screen-1').classList.add('hidden');
+    container.innerHTML += loadQuizz(response.data);
   });
 }
 
