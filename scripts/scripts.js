@@ -9,6 +9,7 @@ let inputLevelValue = 0;
 let quizzInfos = {};
 let quizzData = {};
 const questions = [];
+const levels = [];
 
 // função para renderizar a página 1 da tela 3
 function renderCreateQuizPage() {
@@ -32,6 +33,8 @@ function renderCreateQuizPage() {
 
   containerDiv.innerHTML += templateHTML;
 }
+
+renderCreateQuizPage();
 
 function validateInputs() {
   const inputTitle = document.getElementById('quizz-title');
@@ -266,15 +269,15 @@ function renderCreateQuizPage3() {
         </div>
 
         <div class="form-content">
-          <input type="text" placeholder="Título do nível" id="quizz-level-title" class="quizz-input">
-          <input type="text" placeholder="% de acerto mínima" id="quizz-level-porcentage" class="quizz-input">
-          <input type="text" placeholder="URL da imagem do nível" id="quizz-level-url" class="quizz-input">
-          <textarea placeholder="Descrição do nível" id="quizz-level-description" class="quizz-input"></textarea>
+          <input type="text" placeholder="Título do nível" id="quizz-level-title" class="quizz-input input-level-title">
+          <input type="text" placeholder="% de acerto mínima" id="quizz-level-percentage" class="quizz-input input-level-percentage">
+          <input type="text" placeholder="URL da imagem do nível" id="quizz-level-url" class="quizz-input input-level-url">
+          <textarea placeholder="Descrição do nível" id="quizz-level-description" class="quizz-input input-level-description"></textarea>
         </div>
       </div>
     </div>
 
-    <button type="button" class="btn">
+    <button type="button" class="btn" onclick="validateLevelsInputs()">
       Finalizar Quizz
     </button>
   </div>
@@ -282,6 +285,36 @@ function renderCreateQuizPage3() {
 
   containerDiv.innerHTML = templateHTML;
   renderFormLevels(quizzInfos.levelsAmount);
+}
+
+function validateLevelsInputs() {
+  getAllLevelsInput();
+
+  // agora validar os dados
+}
+
+function getAllLevelsInput() {
+  const allFormElement = Array.from(document.querySelectorAll('.form-levels'));
+
+  allFormElement.forEach((formElement) => {
+    const levelTitle = formElement.querySelector('.input-level-title').value;
+    const levelPercentage = formElement.querySelector(
+      '.input-level-percentage'
+    ).value;
+    const levelUrl = formElement.querySelector('.input-level-url').value;
+    const levelDescription = formElement.querySelector(
+      '.input-level-description'
+    ).value;
+
+    const levelsObject = {
+      title: levelTitle,
+      image: levelUrl,
+      text: levelDescription,
+      minValue: levelPercentage,
+    };
+
+    levels.push(levelsObject);
+  });
 }
 
 function renderFormLevels(levelsAmount) {
@@ -295,10 +328,10 @@ function renderFormLevels(levelsAmount) {
       </div>
 
       <div class="form-content">
-        <input type="text" placeholder="Título do nível" id="quizz-level-title" class="quizz-input">
-        <input type="text" placeholder="% de acerto mínima" id="quizz-level-porcentage" class="quizz-input">
-        <input type="text" placeholder="URL da imagem do nível" id="quizz-level-url" class="quizz-input">
-        <textarea placeholder="Descrição do nível" id="quizz-level-description" class="quizz-input"></textarea>
+        <input type="text" placeholder="Título do nível" id="quizz-level-title" class="quizz-input input-level-title">
+        <input type="text" placeholder="% de acerto mínima" id="quizz-level-percentage" class="quizz-input input-level-percentage">
+        <input type="text" placeholder="URL da imagem do nível" id="quizz-level-url" class="quizz-input input-level-url">
+        <textarea placeholder="Descrição do nível" id="quizz-level-description" class="quizz-input input-level-description"></textarea>
       </div>
     </div>
     `;
