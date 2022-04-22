@@ -7,6 +7,8 @@ let inputAmountValue = 0;
 let inputLevelValue = 0;
 
 let levelURLValue = '';
+let correctAnswerURLValue = '';
+let incorrectAnswerURLValue = '';
 
 let quizzInfos = {};
 let quizzData = {};
@@ -37,6 +39,8 @@ function renderCreateQuizPage() {
 
   containerDiv.innerHTML += templateHTML;
 }
+
+renderCreateQuizPage();
 
 // removi o chamado dessa função e vou usa-la quando clicar no botão de criar quizz
 
@@ -145,72 +149,107 @@ function openCloseForm(form) {
 function validateQuestionsInputs() {
   getAllQuestionsInput();
 
-  // terminar ainda validação toda
-  // terminar validação dessa parte depois de pegar todos os dados da página 3 e validar elas
-  const questionsListElement = Array.from(
-    document.querySelectorAll('#quizz-text')
-  );
-  const questionsArray = questionsListElement.map(
-    (questionElement) => questionElement.value
-  );
-
-  const hexadecimalRegExp = '/^#([0-9A-Fa-f]{3}){1,2}$/i';
-
-  renderCreateQuizPage3();
+  if (!hasError) {
+    renderCreateQuizPage3();
+  }
 }
 
 function getAllQuestionsInput() {
+  hasError = false;
+  const questionsData = [];
   const allFormElement = Array.from(
     document.querySelectorAll('.form-questions')
   );
 
-  allFormElement.forEach((formElement) => {
-    const questionTitle = formElement.querySelector('.input-question-title');
-    const questionColor = formElement.querySelector('.input-question-color');
+  for (let i = 0; i < allFormElement.length; i++) {
+    const questionTitle = allFormElement[i].querySelector(
+      '.input-question-title'
+    ).value;
+    const questionColor = allFormElement[i].querySelector(
+      '.input-question-color'
+    ).value;
 
-    const correctAnswerTitle = formElement.querySelector(
+    const correctAnswerTitle = allFormElement[i].querySelector(
       '.input-correct-answer'
-    );
-    const correctAnswerURL = formElement.querySelector('.input-correct-url');
+    ).value;
+    const correctAnswerURL =
+      allFormElement[i].querySelector('.input-correct-url').value;
+
+    const hexadecimalRegExp = /^#([0-9A-Fa-f]{3}){1,2}$/i;
+    if (
+      questionTitle < 20 ||
+      !hexadecimalRegExp.test(questionColor) ||
+      correctAnswerTitle.length <= 0
+    ) {
+      hasError = true;
+      showMessageError('Preencha os dados corretamente 1');
+      break;
+    }
+
+    try {
+      correctAnswerURLValue = new URL(correctAnswerURL);
+    } catch (error) {
+      hasError = true;
+      showMessageError('Preencha os dados corretamente 1 url');
+      break;
+    }
 
     const answers = [];
 
     const answerObject = {
-      text: correctAnswerTitle.value,
-      image: correctAnswerURL.value,
+      text: correctAnswerTitle,
+      image: correctAnswerURLValue.href,
       isCorrectAnswer: true,
     };
 
     answers.push(answerObject);
 
     const allIncorrectAnswersElement = Array.from(
-      formElement.querySelectorAll('.question-incorrect-answer')
+      allFormElement[i].querySelectorAll('.question-incorrect-answer')
     );
 
-    allIncorrectAnswersElement.forEach((incorrectAnswer) => {
-      const incorrectAnswerTitle = incorrectAnswer.querySelector(
+    for (let i = 0; i < allIncorrectAnswersElement.length; i++) {
+      // falta permitir 1, 2 ou 3 respostas incorretas em vez de 4
+      const incorrectAnswerTitle = allIncorrectAnswersElement[i].querySelector(
         '.input-incorrect-answer'
-      );
-      const incorrectAnswerURL = incorrectAnswer.querySelector(
+      ).value;
+      const incorrectAnswerURL = allIncorrectAnswersElement[i].querySelector(
         '.input-incorrect-url'
-      );
+      ).value;
+
+      try {
+        incorrectAnswerURLValue = new URL(incorrectAnswerURL);
+      } catch (error) {
+        hasError = true;
+        showMessageError('Preencha os dados corretamente');
+        break;
+      }
+
+      if (incorrectAnswerTitle.length <= 0) {
+        break;
+      }
 
       const answerObject = {
-        text: incorrectAnswerTitle.value,
-        image: incorrectAnswerURL.value,
+        text: incorrectAnswerTitle,
+        image: incorrectAnswerURLValue.href,
         isCorrectAnswer: false,
       };
 
       answers.push(answerObject);
-    });
+    }
+
+    if (hasError) break;
 
     const questionObject = {
-      title: questionTitle.value,
-      color: questionColor.value,
+      title: questionTitle,
+      color: questionColor,
       answers,
     };
-    questions.push(questionObject);
-  });
+    questionsData.push(questionObject);
+  }
+  if (!hasError) {
+    questions.push(...questionsData);
+  }
 }
 
 function renderFormQuestions(questionsAmount) {
@@ -293,6 +332,10 @@ function renderCreateQuizPage3() {
 
 function getAllLevelsInput() {
   validateLevelsInputs();
+
+  if (!hasError) {
+    renderCreateQuizPage4();
+  }
 }
 
 function validateLevelsInputs() {
