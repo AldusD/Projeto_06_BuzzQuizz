@@ -127,7 +127,7 @@ function renderCreateQuizPage2() {
   </div>
   `;
 
-  containerDiv.innerHTML += templateHTML;
+  containerDiv.innerHTML = templateHTML;
   renderFormQuestions(quizzInfos.questionsAmount);
 }
 
@@ -139,6 +139,7 @@ function validateQuestionsInputs() {
   getAllQuestionsInput();
 
   // terminar ainda validação toda
+  // terminar validação dessa parte depois de pegar todos os dados da página 3 e validar elas
   const questionsListElement = Array.from(
     document.querySelectorAll('#quizz-text')
   );
@@ -147,6 +148,8 @@ function validateQuestionsInputs() {
   );
 
   const hexadecimalRegExp = '/^#([0-9A-Fa-f]{3}){1,2}$/i';
+
+  renderCreateQuizPage3();
 }
 
 function getAllQuestionsInput() {
@@ -255,9 +258,39 @@ function renderCreateQuizPage3() {
   <div class="screen-3-3">
     <h2 class="heading">Agora, decida os níveis</h2>
 
-    <div class="form form-levels active">
-      <div class="form-header">
-        <h3 class="form-heading">Nível 1</h3>
+    <div class="forms">
+      <div class="form form-levels active">
+        <div class="form-header" onclick="openCloseForm(this)">
+          <h3 class="form-heading">Nível 1</h3>
+          <img src="./images/edit.svg" alt="" class="edit-icon">
+        </div>
+
+        <div class="form-content">
+          <input type="text" placeholder="Título do nível" id="quizz-level-title" class="quizz-input">
+          <input type="text" placeholder="% de acerto mínima" id="quizz-level-porcentage" class="quizz-input">
+          <input type="text" placeholder="URL da imagem do nível" id="quizz-level-url" class="quizz-input">
+          <textarea placeholder="Descrição do nível" id="quizz-level-description" class="quizz-input"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn">
+      Finalizar Quizz
+    </button>
+  </div>
+  `;
+
+  containerDiv.innerHTML = templateHTML;
+  renderFormLevels(quizzInfos.levelsAmount);
+}
+
+function renderFormLevels(levelsAmount) {
+  const formsElement = document.querySelector('.forms');
+  for (let i = 1; i < levelsAmount; i++) {
+    const templateForm = `
+    <div class="form form-levels">
+      <div class="form-header" onclick="openCloseForm(this)">
+        <h3 class="form-heading">Nível ${i + 1}</h3>
         <img src="./images/edit.svg" alt="" class="edit-icon">
       </div>
 
@@ -268,14 +301,10 @@ function renderCreateQuizPage3() {
         <textarea placeholder="Descrição do nível" id="quizz-level-description" class="quizz-input"></textarea>
       </div>
     </div>
+    `;
 
-    <button type="button" class="btn">
-      Finalizar Quizz
-    </button>
-  </div>
-  `;
-
-  containerDiv.innerHTML += templateHTML;
+    formsElement.innerHTML += templateForm;
+  }
 }
 
 // função para renderizar a página 4 da tela 3
