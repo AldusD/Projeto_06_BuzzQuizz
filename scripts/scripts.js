@@ -36,7 +36,7 @@ function renderCreateQuizPage() {
   containerDiv.innerHTML += templateHTML;
 }
 
-renderCreateQuizPage();
+// removi o chamado dessa função e vou usa-la quando clicar no botão de criar quizz
 
 function validateInputs() {
   const inputTitle = document.getElementById('quizz-title');
@@ -417,13 +417,19 @@ function renderAllQuizzes() {
 }
 
 // funções para carregar um quizz - tela 2
+function compare() {
+	return Math.random() - 0.5;
+}
+
 function loadQuizz(quizz) {
   let quizzHTML = '<div class="screen-2">';
+
   let quizzTitle = `
     <div class="quizz-title">
       <img src="${quizz.image}" alt="quizz">
       <h2>${quizz.title}</h2>
     </div>`;
+
   let quizzQuestions = '';
   quizzQuestions += `<div class="questions">`;
   for(let i = 0; i < quizz.questions.length; i++) {
@@ -431,12 +437,16 @@ function loadQuizz(quizz) {
     <div class="question">
       <h3 style="background-color: ${quizz.questions[i].color}">${quizz.questions[i].title}</h3>
       <div class="answers">`;
+
+      // randomizando as respostas
+      quizz.questions[i].answers.sort(compare);    
+
     for(let j = 0; j < quizz.questions[i].answers.length; j++) {
       quizzQuestions += `
       <div onclick="selectAnswer(this)" class="answer ${quizz.questions[i].answers[j].isCorrectAnswer}">
-      <img src="${quizz.questions[i].answers[j].image}" alt="answer">
-      <p>${quizz.questions[i].answers[j].text}</p>
-    </div>`
+        <img src="${quizz.questions[i].answers[j].image}" alt="answer">
+        <p>${quizz.questions[i].answers[j].text}</p>
+      </div>`
     }
     quizzQuestions += `
       </div>
@@ -445,8 +455,8 @@ function loadQuizz(quizz) {
   quizzQuestions += `
     </div>
   </div>`;
+
   quizzHTML += quizzTitle + quizzQuestions;
-  console.log(quizzHTML)
   return quizzHTML;              
 
 }
@@ -459,4 +469,6 @@ function renderQuizz(id) {
   });
 }
 
+// inicializando funções
 renderAllQuizzes();
+// função de criar criar quizz renderCreateQuizPage();
