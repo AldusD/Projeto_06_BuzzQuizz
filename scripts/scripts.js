@@ -21,6 +21,14 @@ let idQuizzUser = 0;
 let userQuizzCreated = {};
 const idQuizzUserArray = [];
 
+// atulizando globalmente o array pra ter todos os ids do usuario
+function getLocalIdQuizzUser() {
+  const idsJSON = localStorage.getItem('idQuizz');
+  const idsArray = JSON.parse(idsJSON);
+
+  idQuizzUserArray.push(...idsArray);
+}
+
 // função para renderizar a página 1 da tela 3
 function renderCreateQuizPage() {
   const containerDiv = document.querySelector('.container');
@@ -45,7 +53,7 @@ function renderCreateQuizPage() {
 }
 
 renderInitialScreen();
-// setTimeout(renderCreateQuizPage, 1000);
+setTimeout(renderCreateQuizPage, 1000);
 
 // removi o chamado dessa função e vou usa-la quando clicar no botão de criar quizz
 
@@ -378,7 +386,7 @@ function getAllLevelsInput() {
   if (!hasError) {
     // enviar as perguntas e dados pra api e depois renderizar a pagina 4
     sendQuizz();
-    renderCreateQuizPage4();
+    setTimeout(renderCreateQuizPage4, 750);
   }
 }
 
@@ -482,6 +490,7 @@ function sendQuizz() {
 }
 
 function postQuizz(quizzObject) {
+  // objeto de teste
   const object = {
     title: 'Título do quizz',
     image: 'https://http.cat/411.jpg',
@@ -557,10 +566,10 @@ function postQuizz(quizzObject) {
       userQuizzCreated = data;
       console.log(userQuizzCreated);
       idQuizzUserArray.push(data.id);
-    });
-  // idQuizzUser = data.id;
 
-  // coloca no array de ids, o id do quizz criado
+      const idsArray = JSON.stringify(idQuizzUserArray);
+      localStorage.setItem('idQuizz', idsArray);
+    });
 }
 
 // função para renderizar a página 4 da tela 3
@@ -585,11 +594,13 @@ function renderCreateQuizPage4() {
   </div>
   `;
 
-  containerDiv.innerHTML += templateHTML;
+  containerDiv.innerHTML = templateHTML;
 }
 
 // função renderizando primeira pagina
 function renderInitialScreen() {
+  getLocalIdQuizzUser();
+
   const container = document.querySelector('.container');
 
   container.innerHTML = `
@@ -604,6 +615,7 @@ function renderInitialScreen() {
     </div>
   </div>
   `;
+
   renderAllQuizzes();
 }
 
@@ -675,8 +687,7 @@ function renderQuizz(id) {
   const container = document.querySelector('.container');
   const promise = axios.get(`${API}/quizzes/${id}`);
   promise.then((response) => {
-    document.querySelector('.screen-1').classList.add('hidden');
-    container.innerHTML += loadQuizz(response.data);
+    container.innerHTML = loadQuizz(response.data);
   });
 }
 
