@@ -17,6 +17,18 @@ const levels = [];
 
 let hasError = false;
 
+let idQuizzUser = 0;
+let userQuizzCreated = {};
+const idQuizzUserArray = [];
+
+// atulizando globalmente o array pra ter todos os ids do usuario
+function getLocalIdQuizzUser() {
+  const idsJSON = localStorage.getItem('idQuizz');
+  const idsArray = JSON.parse(idsJSON);
+
+  idQuizzUserArray.push(...idsArray);
+}
+
 // função para renderizar a página 1 da tela 3
 function renderCreateQuizPage() {
   const containerDiv = document.querySelector('.container');
@@ -39,10 +51,6 @@ function renderCreateQuizPage() {
 
   containerDiv.innerHTML += templateHTML;
 }
-
-// renderCreateQuizPage();
-
-// removi o chamado dessa função e vou usa-la quando clicar no botão de criar quizz
 
 function validateInputs() {
   const inputTitle = document.getElementById('quizz-title');
@@ -175,7 +183,7 @@ function getAllQuestionsInput() {
     const correctAnswerURL =
       allFormElement[i].querySelector('.input-correct-url').value;
 
-    const hexadecimalRegExp = /^#([0-9A-Fa-f]{3}){1,2}$/i;
+    const hexadecimalRegExp = /^#[0-9A-Fa-f]{6}$/i;
     if (
       questionTitle < 20 ||
       !hexadecimalRegExp.test(questionColor) ||
@@ -371,7 +379,9 @@ function getAllLevelsInput() {
   validateLevelsInputs();
 
   if (!hasError) {
-    renderCreateQuizPage4();
+    // enviar as perguntas e dados pra api e depois renderizar a pagina 4
+    sendQuizz();
+    setTimeout(renderCreateQuizPage4, 750);
   }
 }
 
@@ -461,6 +471,102 @@ function renderFormLevels(levelsAmount) {
   }
 }
 
+function sendQuizz() {
+  quizzData = {
+    title: quizzInfos.title,
+    image: quizzInfos.image,
+    questions,
+    levels,
+  };
+
+  // post pra api e retorna id
+  // idQuizzUser = idRetornado
+  postQuizz();
+}
+
+function postQuizz(quizzObject) {
+  // objeto de teste
+  const object = {
+    title: 'Título do quizz',
+    image: 'https://http.cat/411.jpg',
+    questions: [
+      {
+        title: 'Título da pergunta 1',
+        color: '#123456',
+        answers: [
+          {
+            text: 'Texto da resposta 1',
+            image: 'https://http.cat/411.jpg',
+            isCorrectAnswer: true,
+          },
+          {
+            text: 'Texto da resposta 2',
+            image: 'https://http.cat/412.jpg',
+            isCorrectAnswer: false,
+          },
+        ],
+      },
+      {
+        title: 'Título da pergunta 2',
+        color: '#123456',
+        answers: [
+          {
+            text: 'Texto da resposta 1',
+            image: 'https://http.cat/411.jpg',
+            isCorrectAnswer: true,
+          },
+          {
+            text: 'Texto da resposta 2',
+            image: 'https://http.cat/412.jpg',
+            isCorrectAnswer: false,
+          },
+        ],
+      },
+      {
+        title: 'Título da pergunta 3',
+        color: '#123456',
+        answers: [
+          {
+            text: 'Texto da resposta 1',
+            image: 'https://http.cat/411.jpg',
+            isCorrectAnswer: true,
+          },
+          {
+            text: 'Texto da resposta 2',
+            image: 'https://http.cat/412.jpg',
+            isCorrectAnswer: false,
+          },
+        ],
+      },
+    ],
+    levels: [
+      {
+        title: 'Título do nível 1',
+        image: 'https://http.cat/411.jpg',
+        text: 'Descrição do nível 1',
+        minValue: 0,
+      },
+      {
+        title: 'Título do nível 2',
+        image: 'https://http.cat/412.jpg',
+        text: 'Descrição do nível 2',
+        minValue: 50,
+      },
+    ],
+  };
+
+  const data = axios
+    .post('https://mock-api.driven.com.br/api/v6/buzzquizz/quizzes', object)
+    .then(({ data }) => {
+      userQuizzCreated = data;
+      console.log(userQuizzCreated);
+      idQuizzUserArray.push(data.id);
+
+      const idsArray = JSON.stringify(idQuizzUserArray);
+      localStorage.setItem('idQuizz', idsArray);
+    });
+}
+
 // função para renderizar a página 4 da tela 3
 function renderCreateQuizPage4() {
   const containerDiv = document.querySelector('.container');
@@ -469,21 +575,43 @@ function renderCreateQuizPage4() {
     <h2 class="heading">Seu quizz está pronto!</h2>
 
     <div class="quizz-success-wrapper">
-      <img src="./images/harry.png" alt="" class="quizz-success-image">
-      <span class="quizz-success-text">O quão Potterhead é você?</span>
+      <img src="${userQuizzCreated.image}" alt="" class="quizz-success-image">
+      <span class="quizz-success-text">${userQuizzCreated.title}</span>
     </div>
 
-    <button type="button" class="btn">
+    <button type="button" class="btn" onclick="renderQuizz(${userQuizzCreated.id})">
       Acessar Quizz
     </button>
 
-    <button type="button" class="btn go-home">
+    <button type="button" class="btn go-home" onclick="renderInitialScreen()">
       Voltar para home
     </button>
   </div>
   `;
 
-  containerDiv.innerHTML += templateHTML;
+  containerDiv.innerHTML = templateHTML;
+}
+
+// função renderizando primeira pagina
+function renderInitialScreen() {
+  getLocalIdQuizzUser();
+
+  const container = document.querySelector('.container');
+
+  container.innerHTML = `
+  <div class="screen-1">
+    <div class="your-quizzes">
+      <div class="placeholder">FOR TEST PURPOSES ONLY, WILL BE REMOVED</div>
+    </div>
+
+    <div class="all-quizzes">
+      <h2>Todos os Quizzes</h2>
+      <div class="quizzes"></div>
+    </div>
+  </div>
+  `;
+
+  renderAllQuizzes();
 }
 
 // funções para renderizar seção todos os quizzes - tela 1
@@ -565,11 +693,10 @@ function renderQuizz(id) {
   const container = document.querySelector('.container');
   const promise = axios.get(`${API}/quizzes/${id}`);
   promise.then((response) => {
-    document.querySelector('.screen-1').classList.add('hidden');
-    container.innerHTML += loadQuizz(response.data);
+    container.innerHTML = loadQuizz(response.data);
   });
 }
 
 // inicializando funções
-renderAllQuizzes();
-// função de criar criar quizz renderCreateQuizPage();
+renderInitialScreen();
+setTimeout(renderCreateQuizPage, 1000);
