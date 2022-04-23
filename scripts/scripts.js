@@ -40,7 +40,7 @@ function renderCreateQuizPage() {
   containerDiv.innerHTML += templateHTML;
 }
 
-renderCreateQuizPage();
+// renderCreateQuizPage();
 
 // removi o chamado dessa função e vou usa-la quando clicar no botão de criar quizz
 
@@ -512,6 +512,16 @@ function compare() {
   return Math.random() - 0.5;
 }
 
+function selectAnswer(answer) {
+  const question = answer.parentNode.parentNode;
+  const existSelected = !!(question.querySelector(".selected-answer"));
+  
+  if(!existSelected){
+    answer.classList.add('selected-answer');
+    question.classList.add('question-answered');
+  }
+}
+
 function loadQuizz(quizz) {
   let quizzHTML = '<div class="screen-2">';
 
@@ -550,6 +560,7 @@ function loadQuizz(quizz) {
   quizzHTML += quizzTitle + quizzQuestions;
   return quizzHTML;
 }
+
 function renderQuizz(id) {
   const container = document.querySelector('.container');
   const promise = axios.get(`${API}/quizzes/${id}`);

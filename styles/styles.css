@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  max-width: 100%;
 }
 
 body {
@@ -151,6 +152,7 @@ img {
     align-items: center;
     height: 228px;
     width: 100%;
+    min-width: 100%;
     overflow: hidden;
     margin-bottom: 2.5em;
     
@@ -192,7 +194,8 @@ img {
     display: flex;
     flex-direction: column;
     background-color: white;
-    width: 31em;
+    width: 40em;
+
     padding: 1em;
     margin-bottom: 2em;
   }
@@ -205,11 +208,13 @@ img {
 
     padding: 1.4em 0;
     margin-bottom: 0.8em;
+    overflow-wrap: break-word;
   }
 
   .screen-2 .answers {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
   }
 
   .screen-2 .question img {
@@ -220,7 +225,11 @@ img {
   .screen-2 .answer p {
     font-weight: bold;
     font-size: 1.2em;
+    line-break: auto;
     margin-top: 0.4em;
+
+    width: 12em;
+    overflow-wrap: break-word;
   }
 /* fim da Estilização tela 2 */
 
