@@ -175,7 +175,7 @@ function getAllQuestionsInput() {
     const correctAnswerURL =
       allFormElement[i].querySelector('.input-correct-url').value;
 
-    const hexadecimalRegExp = /^#([0-9A-Fa-f]{3}){1,2}$/i;
+    const hexadecimalRegExp = /^#[0-9A-Fa-f]{6}$/i;
     if (
       questionTitle < 20 ||
       !hexadecimalRegExp.test(questionColor) ||
