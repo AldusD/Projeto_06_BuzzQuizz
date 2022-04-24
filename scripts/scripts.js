@@ -1,6 +1,9 @@
 // Variaveis globais e constantes
 const API = 'https://mock-api.driven.com.br/api/v6/buzzquizz';
 
+let pontuation = 0;
+let solvingQuizz;
+
 let inputTitleValue = '';
 let inputURLValue = '';
 let inputAmountValue = 0;
@@ -594,7 +597,7 @@ function renderCreateQuizPage4() {
 
 // função renderizando primeira pagina
 function renderInitialScreen() {
-  getLocalIdQuizzUser();
+  // getLocalIdQuizzUser();
 
   const container = document.querySelector('.container');
 
@@ -640,41 +643,33 @@ function compare() {
   return Math.random() - 0.5;
 }
 
-function selectAnswer(answer) {
-  const question = answer.parentNode.parentNode;
-  const existSelected = !!(question.querySelector(".selected-answer"));
-  
-  if(!existSelected){
-    answer.classList.add('selected-answer');
-    question.classList.add('question-answered');
-  }
-}
 
-function loadQuizz(quizz) {
+function loadQuizz() {
+  pontuation = 0; 
   let quizzHTML = '<div class="screen-2">';
 
   let quizzTitle = `
     <div class="quizz-title">
-      <img src="${quizz.image}" alt="quizz">
-      <h2>${quizz.title}</h2>
+      <img src="${solvingQuizz.image}" alt="quizz">
+      <h2>${solvingQuizz.title}</h2>
     </div>`;
 
   let quizzQuestions = '';
   quizzQuestions += `<div class="questions">`;
-  for (let i = 0; i < quizz.questions.length; i++) {
+  for (let i = 0; i < solvingQuizz.questions.length; i++) {
     quizzQuestions += `
     <div class="question">
-      <h3 style="background-color: ${quizz.questions[i].color}">${quizz.questions[i].title}</h3>
+      <h3 style="background-color: ${solvingQuizz.questions[i].color}">${solvingQuizz.questions[i].title}</h3>
       <div class="answers">`;
 
     // randomizando as respostas
-    quizz.questions[i].answers.sort(compare);
+    solvingQuizz.questions[i].answers.sort(compare);
 
-    for (let j = 0; j < quizz.questions[i].answers.length; j++) {
+    for (let j = 0; j < solvingQuizz.questions[i].answers.length; j++) {
       quizzQuestions += `
-      <div onclick="selectAnswer(this)" class="answer ${quizz.questions[i].answers[j].isCorrectAnswer}">
-        <img src="${quizz.questions[i].answers[j].image}" alt="answer">
-        <p>${quizz.questions[i].answers[j].text}</p>
+      <div onclick="selectAnswer(this)" class="not-selected answer ${solvingQuizz.questions[i].answers[j].isCorrectAnswer}">
+        <img src="${solvingQuizz.questions[i].answers[j].image}" alt="answer">
+        <p>${solvingQuizz.questions[i].answers[j].text}</p>
       </div>`;
     }
     quizzQuestions += `
@@ -693,10 +688,87 @@ function renderQuizz(id) {
   const container = document.querySelector('.container');
   const promise = axios.get(`${API}/quizzes/${id}`);
   promise.then((response) => {
-    container.innerHTML = loadQuizz(response.data);
+    solvingQuizz = response.data;
+    container.innerHTML = loadQuizz();
+    document.querySelector(".quizz-title").scrollIntoView();
   });
 }
 
+// funções para resolver e finalizar um quizz
+
+function whichLevel(percentual) {
+  const levels = solvingQuizz.levels;
+  let level;
+  let levelMinValue = -1
+  for(let i = 0; i < levels.length; i++) {
+    // tem pontuacao para estar nesse nivel && esta num nivel inferior ao novo
+    if(percentual >= levels[i].minValue && levels[i].minValue >= levelMinValue) {
+      level = levels[i];
+      levelMinValue = levels[i].minValue;
+    }
+  }
+  return level;
+}
+
+function loadQuizzResults() {
+  const screen = document.querySelector('.screen-2');
+  const questions = document.querySelectorAll('.question');
+  console.log(pontuation, questions.length)
+  const correctPercentual = Math.round((pontuation / questions.length) * 100);
+  const myLevel = whichLevel(correctPercentual);
+  console.log(myLevel)
+  screen.innerHTML += `
+  <div class="quizz-results">
+    <h3>${correctPercentual}% de acerto: ${myLevel.title}</h3>
+    <div class="img-text">
+      <img src=${myLevel.image} alt="que nível!">
+      <p>${myLevel.text}</p>
+    </div>
+  </div>
+  <button class="reload" onclick="renderQuizz(${solvingQuizz.id})">Reiniciar Quizz</button>
+  <button class="back" onclick="renderInitialScreen()">Voltar pra home</button>`;
+}
+
+function isQuizzFinished(quizzQuestions) {
+  let finished = true;
+  for(let i = 0; i < quizzQuestions.length; i++) {
+    if(quizzQuestions[i].classList.contains("question-answered") === false) {
+      finished = false;
+    }
+  }
+  if(finished){
+    loadQuizzResults()
+  }
+}
+
+function selectAnswer(answer) {
+  const question = answer.parentNode.parentNode;
+  const existSelected = !!(question.querySelector(".selected-answer"));
+  const questions = document.querySelectorAll(".question")
+  let index;
+
+  for(let i = 0; i < questions.length; i++) {
+    if(question === questions[i]) {
+      index = i;
+    }
+  }
+  if(!existSelected){
+    answer.classList.add('selected-answer');
+    answer.classList.remove('not-selected');
+    question.classList.add('question-answered');
+    if(index + 1 < questions.length){
+      setTimeout(()=>questions[index+1].scrollIntoView(), 2000);
+    }
+    
+    if(answer.classList.contains('true') ===  true) {
+      pontuation ++;
+    }
+    console.log(pontuation)
+    isQuizzFinished(questions);
+  }
+}
+
+
 // inicializando funções
-renderInitialScreen();
-setTimeout(renderCreateQuizPage, 1000);
+renderInitialScreen()
+// setTimeout(renderCreateQuizPage, 1000);

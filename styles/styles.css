@@ -135,6 +135,8 @@ img {
   bottom: 8px;
   left: 18px;
   z-index: 1;
+  max-width: 320px;
+  overflow-wrap: break-word;
 }
 /* Fim da estilização tela 1 */
 
@@ -158,6 +160,10 @@ img {
     
     position: relative;
   }
+
+  .screen-2 h2 {
+    overflow-wrap: break-word;
+  } 
 
   .screen-2 > .quizz-title:after {
     position: absolute;
@@ -217,6 +223,10 @@ img {
     justify-content: space-evenly;
   }
 
+  .screen-2 .answer {
+    position: relative;
+  }
+
   .screen-2 .question img {
     height: 10em;
     width: 14em;
@@ -231,6 +241,67 @@ img {
     width: 12em;
     overflow-wrap: break-word;
   }
+
+/* answer selection */
+.question-answered .true > p {
+  color: #009C22;
+}
+
+.question-answered .false > p {
+  color: #FF4B4B;
+}
+
+ .question-answered .not-selected::after {
+  position: absolute;
+  content:"";
+  height:100%;
+  width:100%;
+  top:0;
+  left:0;
+  background: #FFFFFF80;
+}
+
+/* resultados do quizz */
+.screen-2 .quizz-results {
+  background-color: white;
+  margin-bottom: 58px;
+}
+
+.screen-2 .quizz-results h3 {
+  overflow-wrap: break-word;
+  background-color: #EC362D;
+  padding: 46px 0;
+  margin-bottom: 20px;
+}
+
+.screen-2 .quizz-results .img-text {
+  display: flex;
+}
+
+.screen-2 .quizz-results img {
+  width: 364px;
+  height: 273px;
+  margin-right: 8px;
+}
+
+.screen-2 .reload {
+  background-color: #EC362D;
+  color: white;
+  font-size: 20px;
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  width: 260px;
+  height: 52px;
+}
+
+.screen-2 .back {
+  color: #818181;
+  font-size: 20px;
+  background: none;
+  border: none;
+}
+
 /* fim da Estilização tela 2 */
 
 /* estilizações tela 3 - criação de quiz (1) */
