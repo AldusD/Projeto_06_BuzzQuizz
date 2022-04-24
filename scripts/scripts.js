@@ -27,6 +27,7 @@ const idQuizzUserArray = [];
 // atulizando globalmente o array pra ter todos os ids do usuario
 function getLocalIdQuizzUser() {
   const idsJSON = localStorage.getItem('idQuizz');
+  if (idsJSON === null) return;
   const idsArray = JSON.parse(idsJSON);
 
   idQuizzUserArray.push(...idsArray);
@@ -52,8 +53,12 @@ function renderCreateQuizPage() {
   </div>
   `;
 
-  containerDiv.innerHTML += templateHTML;
+  containerDiv.innerHTML = templateHTML;
 }
+
+renderInitialScreen();
+
+// removi o chamado dessa função e vou usa-la quando clicar no botão de criar quizz
 
 function validateInputs() {
   const inputTitle = document.getElementById('quizz-title');
@@ -484,7 +489,7 @@ function sendQuizz() {
 
   // post pra api e retorna id
   // idQuizzUser = idRetornado
-  postQuizz();
+  postQuizz(quizzData);
 }
 
 function postQuizz(quizzObject) {
@@ -559,7 +564,10 @@ function postQuizz(quizzObject) {
   };
 
   const data = axios
-    .post('https://mock-api.driven.com.br/api/v6/buzzquizz/quizzes', object)
+    .post(
+      'https://mock-api.driven.com.br/api/v6/buzzquizz/quizzes',
+      quizzObject
+    )
     .then(({ data }) => {
       userQuizzCreated = data;
       console.log(userQuizzCreated);
@@ -604,7 +612,20 @@ function renderInitialScreen() {
   container.innerHTML = `
   <div class="screen-1">
     <div class="your-quizzes">
-      <div class="placeholder">FOR TEST PURPOSES ONLY, WILL BE REMOVED</div>
+      <span>Você não criou nenhum quizz ainda :(</span>
+      <button class="btn btn-create-quizz" onclick="renderCreateQuizPage()">Criar Quizz</button>
+       <!-- <div class="placeholder">FOR TEST PURPOSES ONLY, WILL BE REMOVED</div> -->
+    </div>
+
+    <div class="your-quizzes-created hidden">
+      <div class="your-quizzes-header">
+        <h3>Seus Quizzes</h3>
+        <button class="btn btn-has-quizzes" onclick="renderCreateQuizPage()"><img src="./images/plus.svg" /></button>
+      </div>
+
+      <div class="quizzes-user"></div>
+
+       <!-- <div class="placeholder">FOR TEST PURPOSES ONLY, WILL BE REMOVED</div> -->
     </div>
 
     <div class="all-quizzes">
@@ -622,11 +643,23 @@ function insertQuizzes(response, section) {
   const quizzList = response.data;
 
   for (let i = 0; i < Object.keys(quizzList).length; i++) {
-    section.innerHTML += `
-    <div class="quizz" onclick="renderQuizz(${quizzList[i].id})">
-      <img src=${quizzList[i].image} alt="quizz">
-      <h3>${quizzList[i].title}</h3>
-    </div>`;
+    if (idQuizzUserArray.includes(quizzList[i].id)) {
+      const userQuizzes = document.querySelector('.your-quizzes');
+      const userQuizzesCreated = document.querySelector(
+        '.your-quizzes-created'
+      );
+      userQuizzesCreated.classList.remove('hidden');
+      userQuizzes.classList.add('hidden');
+
+      renderUserQuizzes(quizzList[i]);
+    } else {
+      section.innerHTML += `
+        <div class="quizz" onclick="renderQuizz(${quizzList[i].id})">
+          <img src=${quizzList[i].image} alt="quizz">
+          <h3>${quizzList[i].title}</h3>
+        </div>
+      `;
+    }
   }
 }
 
@@ -636,6 +669,16 @@ function renderAllQuizzes() {
   const promise = axios.get(`${API}/quizzes`);
 
   promise.then((response) => insertQuizzes(response, quizzes));
+}
+
+function renderUserQuizzes(quizz) {
+  const userQuizzes = document.querySelector('.quizzes-user');
+  userQuizzes.innerHTML += `
+    <div class="quizz" onclick="renderQuizz(${quizz.id})">
+      <img src=${quizz.image} alt="quizz">
+      <h3>${quizz.title}</h3>
+    </div>
+  `;
 }
 
 // funções para carregar um quizz - tela 2
