@@ -781,6 +781,7 @@ function isQuizzFinished(quizzQuestions) {
   }
   if(finished){
     loadQuizzResults()
+    setInterval( () => document.querySelector('.quizz-results').scrollIntoView(), 2000);
   }
 }
 
