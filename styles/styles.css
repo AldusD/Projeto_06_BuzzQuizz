@@ -206,7 +206,7 @@ img {
   width: 340px;
   border-radius: 8px;
 }
-.all-quizzes .quizz:after {
+.quizz:after {
   position: absolute;
   content: '';
   height: 100%;

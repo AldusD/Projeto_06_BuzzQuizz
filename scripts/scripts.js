@@ -389,7 +389,7 @@ function getAllLevelsInput() {
   if (!hasError) {
     // enviar as perguntas e dados pra api e depois renderizar a pagina 4
     sendQuizz();
-    setTimeout(renderCreateQuizPage4, 750);
+    setTimeout(renderCreateQuizPage4, 2050);
   }
 }
 
@@ -673,6 +673,7 @@ function renderAllQuizzes() {
 
 function renderUserQuizzes(quizz) {
   const userQuizzes = document.querySelector('.quizzes-user');
+  
   userQuizzes.innerHTML += `
     <div class="quizz" onclick="renderQuizz(${quizz.id})">
       <img src=${quizz.image} alt="quizz">
@@ -781,7 +782,7 @@ function isQuizzFinished(quizzQuestions) {
   }
   if(finished){
     loadQuizzResults()
-    setInterval( () => document.querySelector('.quizz-results').scrollIntoView(), 2000);
+    setTimeout( () => document.querySelector('.quizz-results').scrollIntoView(), 2000);
   }
 }
 
@@ -811,8 +812,7 @@ function selectAnswer(answer) {
     isQuizzFinished(questions);
   }
 }
-
-
 // inicializando funções
+getLocalIdQuizzUser()
 renderInitialScreen()
 // setTimeout(renderCreateQuizPage, 1000);
