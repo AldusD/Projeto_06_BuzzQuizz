@@ -83,17 +83,6 @@ img {
   color: #b9b9b9;
 }
 
-/* Placeholder */
-.your-quizzes .placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 400px;
-  width: inherit;
-  background-color: lightgreen;
-}
-/* Placeholder */
-
 .header > h1 {
   font-weight: bold;
   font-size: 38px;
@@ -577,3 +566,22 @@ textarea {
   margin-top: 10px;
 }
 /* fim da estilização da tela 3 */
+
+/* loading */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  position: fixed;
+  top: 40%;
+  left: 40%;
+  z-index: 1;
+}
+
+.loading p {
+  font-size: 26px;
+  color: #EC362D;
+}
+
+/* loading */

@@ -1,6 +1,8 @@
 // Variaveis globais e constantes
 const API = 'https://mock-api.driven.com.br/api/v6/buzzquizz';
 
+const loading = document.querySelector('.loading');
+
 let pontuation = 0;
 let solvingQuizz;
 
@@ -55,10 +57,6 @@ function renderCreateQuizPage() {
 
   containerDiv.innerHTML = templateHTML;
 }
-
-renderInitialScreen();
-
-// removi o chamado dessa função e vou usa-la quando clicar no botão de criar quizz
 
 function validateInputs() {
   const inputTitle = document.getElementById('quizz-title');
@@ -605,8 +603,6 @@ function renderCreateQuizPage4() {
 
 // função renderizando primeira pagina
 function renderInitialScreen() {
-  // getLocalIdQuizzUser();
-
   const container = document.querySelector('.container');
 
   container.innerHTML = `
@@ -660,15 +656,19 @@ function insertQuizzes(response, section) {
         </div>
       `;
     }
+  loading.classList.add('hidden');
   }
 }
 
 function renderAllQuizzes() {
+  loading.classList.remove('hidden');
+  // removido em insertquizzes
   const quizzes = document.querySelector('.all-quizzes .quizzes');
   quizzes.innerHTML = '';
   const promise = axios.get(`${API}/quizzes`);
 
-  promise.then((response) => insertQuizzes(response, quizzes));
+  promise.then( response => {
+    insertQuizzes(response, quizzes)});
 }
 
 function renderUserQuizzes(quizz) {
@@ -725,10 +725,12 @@ function loadQuizz() {
   </div>`;
 
   quizzHTML += quizzTitle + quizzQuestions;
+  loading.classList.add('hidden');
   return quizzHTML;
 }
 
 function renderQuizz(id) {
+  loading.classList.remove('hidden');
   const container = document.querySelector('.container');
   const promise = axios.get(`${API}/quizzes/${id}`);
   promise.then((response) => {
