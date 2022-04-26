@@ -354,6 +354,11 @@ img {
 
 /* resultados do quizz */
 .screen-2 .quizz-results {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 40em;
+  padding: 1em;
   background-color: white;
   margin-bottom: 58px;
 }
@@ -364,13 +369,12 @@ img {
   text-align: center;
   overflow-wrap: break-word;
   background-color: #ec362d;
-  padding: 46px 0;
+  padding: 1.4em 0;
   margin-bottom: 20px;
 }
 
 .screen-2 .quizz-results .img-text {
   display: flex;
-  padding: 0 20px;
 }
 
 .screen-2 .quizz-results img {
@@ -382,6 +386,7 @@ img {
 .screen-2 .quizz-results p {
   font-weight: bold;
   font-size: 18px;
+  line-height: 25px;
 }
 
 .screen-2 .reload {
