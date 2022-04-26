@@ -2,6 +2,7 @@
 const API = 'https://mock-api.driven.com.br/api/v6/buzzquizz';
 
 const loading = document.querySelector('.loading');
+const container = document.querySelector('.container');
 
 let pontuation = 0;
 let solvingQuizz;
@@ -668,18 +669,20 @@ function insertQuizzes(response, section) {
         </div>
       `;
     }
-    loading.classList.add('hidden');
+    // loading.classList.add('hidden');
   }
 }
 
 function renderAllQuizzes() {
-  loading.classList.remove('hidden');
   // removido em insertquizzes
   const quizzes = document.querySelector('.all-quizzes .quizzes');
   quizzes.innerHTML = '';
   const promise = axios.get(`${API}/quizzes`);
 
   promise.then((response) => {
+    loading.classList.add('hidden');
+    container.classList.remove('hidden');
+
     insertQuizzes(response, quizzes);
   });
 }
@@ -741,7 +744,7 @@ function loadQuizz() {
   </div>`;
 
   quizzHTML += quizzTitle + quizzQuestions;
-  loading.classList.add('hidden');
+  // loading.classList.add('hidden');
   return quizzHTML;
 }
 
@@ -750,6 +753,8 @@ function renderQuizz(id) {
   const container = document.querySelector('.container');
   const promise = axios.get(`${API}/quizzes/${id}`);
   promise.then((response) => {
+    loading.classList.add('hidden');
+
     solvingQuizz = response.data;
     container.innerHTML = loadQuizz();
     document.querySelector('.quizz-title').scrollIntoView();
