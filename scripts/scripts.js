@@ -25,14 +25,21 @@ let hasError = false;
 let idQuizzUser = 0;
 let userQuizzCreated = {};
 const idQuizzUserArray = [];
+const userQuizzArray = [];
 
 // atulizando globalmente o array pra ter todos os ids do usuario
-function getLocalIdQuizzUser() {
+function getLocalQuizzUser() {
   const idsJSON = localStorage.getItem('idQuizz');
   if (idsJSON === null) return;
   const idsArray = JSON.parse(idsJSON);
 
   idQuizzUserArray.push(...idsArray);
+
+  const objectQuizzJSON = localStorage.getItem('objectQuizz');
+  if (objectQuizzJSON === null) return;
+  const objectQuizzArray = JSON.parse(objectQuizzJSON);
+
+  userQuizzArray.push(...objectQuizzArray);
 }
 
 // função para renderizar a página 1 da tela 3
@@ -570,9 +577,14 @@ function postQuizz(quizzObject) {
       userQuizzCreated = data;
       console.log(userQuizzCreated);
       idQuizzUserArray.push(data.id);
+      userQuizzArray.push(data);
 
       const idsArray = JSON.stringify(idQuizzUserArray);
       localStorage.setItem('idQuizz', idsArray);
+
+      const dataJSON = JSON.stringify(userQuizzArray);
+
+      localStorage.setItem('objectQuizz', dataJSON);
     });
 }
 
@@ -656,7 +668,7 @@ function insertQuizzes(response, section) {
         </div>
       `;
     }
-  loading.classList.add('hidden');
+    loading.classList.add('hidden');
   }
 }
 
@@ -667,17 +679,22 @@ function renderAllQuizzes() {
   quizzes.innerHTML = '';
   const promise = axios.get(`${API}/quizzes`);
 
-  promise.then( response => {
-    insertQuizzes(response, quizzes)});
+  promise.then((response) => {
+    insertQuizzes(response, quizzes);
+  });
 }
 
 function renderUserQuizzes(quizz) {
   const userQuizzes = document.querySelector('.quizzes-user');
-  
+
   userQuizzes.innerHTML += `
     <div class="quizz" onclick="renderQuizz(${quizz.id})">
-      <img src=${quizz.image} alt="quizz">
+      <img src=${quizz.image} alt="quizz" class='quizz-user-image'>
       <h3>${quizz.title}</h3>
+
+      <button type="button" class="btn btn-delete" onclick="deleteQuizz(${quizz.id}); event.stopPropagation()">
+        <img src='./images/remove.svg' />
+      </button>
     </div>
   `;
 }
@@ -687,9 +704,8 @@ function compare() {
   return Math.random() - 0.5;
 }
 
-
 function loadQuizz() {
-  pontuation = 0; 
+  pontuation = 0;
   let quizzHTML = '<div class="screen-2">';
 
   let quizzTitle = `
@@ -736,7 +752,7 @@ function renderQuizz(id) {
   promise.then((response) => {
     solvingQuizz = response.data;
     container.innerHTML = loadQuizz();
-    document.querySelector(".quizz-title").scrollIntoView();
+    document.querySelector('.quizz-title').scrollIntoView();
   });
 }
 
@@ -745,10 +761,13 @@ function renderQuizz(id) {
 function whichLevel(percentual) {
   const levels = solvingQuizz.levels;
   let level;
-  let levelMinValue = -1
-  for(let i = 0; i < levels.length; i++) {
+  let levelMinValue = -1;
+  for (let i = 0; i < levels.length; i++) {
     // tem pontuacao para estar nesse nivel && esta num nivel inferior ao novo
-    if(percentual >= levels[i].minValue && levels[i].minValue >= levelMinValue) {
+    if (
+      percentual >= levels[i].minValue &&
+      levels[i].minValue >= levelMinValue
+    ) {
       level = levels[i];
       levelMinValue = levels[i].minValue;
     }
@@ -759,10 +778,10 @@ function whichLevel(percentual) {
 function loadQuizzResults() {
   const screen = document.querySelector('.screen-2');
   const questions = document.querySelectorAll('.question');
-  console.log(pontuation, questions.length)
+  console.log(pontuation, questions.length);
   const correctPercentual = Math.round((pontuation / questions.length) * 100);
   const myLevel = whichLevel(correctPercentual);
-  console.log(myLevel)
+  console.log(myLevel);
   screen.innerHTML += `
   <div class="quizz-results">
     <h3>${correctPercentual}% de acerto: ${myLevel.title}</h3>
@@ -777,44 +796,75 @@ function loadQuizzResults() {
 
 function isQuizzFinished(quizzQuestions) {
   let finished = true;
-  for(let i = 0; i < quizzQuestions.length; i++) {
-    if(quizzQuestions[i].classList.contains("question-answered") === false) {
+  for (let i = 0; i < quizzQuestions.length; i++) {
+    if (quizzQuestions[i].classList.contains('question-answered') === false) {
       finished = false;
     }
   }
-  if(finished){
-    loadQuizzResults()
-    setTimeout( () => document.querySelector('.quizz-results').scrollIntoView(), 2000);
+  if (finished) {
+    loadQuizzResults();
+    setTimeout(
+      () => document.querySelector('.quizz-results').scrollIntoView(),
+      2000
+    );
   }
 }
 
 function selectAnswer(answer) {
   const question = answer.parentNode.parentNode;
-  const existSelected = !!(question.querySelector(".selected-answer"));
-  const questions = document.querySelectorAll(".question")
+  const existSelected = !!question.querySelector('.selected-answer');
+  const questions = document.querySelectorAll('.question');
   let index;
 
-  for(let i = 0; i < questions.length; i++) {
-    if(question === questions[i]) {
+  for (let i = 0; i < questions.length; i++) {
+    if (question === questions[i]) {
       index = i;
     }
   }
-  if(!existSelected){
+  if (!existSelected) {
     answer.classList.add('selected-answer');
     answer.classList.remove('not-selected');
     question.classList.add('question-answered');
-    if(index + 1 < questions.length){
-      setTimeout(()=>questions[index+1].scrollIntoView(), 2000);
+    if (index + 1 < questions.length) {
+      setTimeout(() => questions[index + 1].scrollIntoView(), 2000);
     }
-    
-    if(answer.classList.contains('true') ===  true) {
-      pontuation ++;
+
+    if (answer.classList.contains('true') === true) {
+      pontuation++;
     }
-    console.log(pontuation)
+    console.log(pontuation);
     isQuizzFinished(questions);
   }
 }
+
+function deleteQuizz(id) {
+  const quizzObjectFiltered = userQuizzArray.filter((quizz) => quizz.id === id);
+  const quizzObject = quizzObjectFiltered[0];
+
+  if (window.confirm(`Você quer mesmo deletar o quizz ${quizzObject.title}?`)) {
+    const headers = { 'Secret-Key': quizzObject.key };
+    const response = axios
+      .delete(`${API}/quizzes/${id}`, { headers })
+      .then((response) => {
+        if (response.status === 204) {
+          const indexObject = userQuizzArray.indexOf(quizzObject);
+          const indexId = idQuizzUserArray.indexOf(quizzObject.id);
+          if (indexObject > -1 && indexId > -1) {
+            userQuizzArray.splice(indexObject, 1);
+            idQuizzUserArray.splice(indexId, 1);
+
+            const idsArray = JSON.stringify(idQuizzUserArray);
+            localStorage.setItem('idQuizz', idsArray);
+            const dataJSON = JSON.stringify(userQuizzArray);
+            localStorage.setItem('objectQuizz', dataJSON);
+          }
+          renderInitialScreen();
+        }
+      });
+  }
+}
+
 // inicializando funções
-getLocalIdQuizzUser()
-renderInitialScreen()
+getLocalQuizzUser();
+renderInitialScreen();
 // setTimeout(renderCreateQuizPage, 1000);
